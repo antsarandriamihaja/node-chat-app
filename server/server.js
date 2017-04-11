@@ -15,13 +15,24 @@ app.use(express.static(publicPath));
 //register an event listener using io
 //built-in event
 
-io.on('connection', (socket)=>{
-console.log('new user connected');
-socket.on('disconnect', () =>{
-console.log('client disconnected');
-});
+io.on('connection', (socket) => {
+    console.log('new user connected');
+//emitting and listening to events to/from client
+    socket.emit('receivedEmail', {
+        from: 'robson@gmail.com',
+        text: 'I want to eat sushi tonight',
+        createdAt: new Date().getTime()
+    });
+
+    socket.on('createMessage',(newMessage)=>{
+        console.log('createMessage', newMessage);
+    })
+
+    socket.on('disconnect', () => {
+        console.log('client disconnected');
+    });
 })
 
-server.listen(port, ()=>{
+server.listen(port, () => {
     console.log(`Server running on port ${port}`);
 })
