@@ -17,15 +17,15 @@ app.use(express.static(publicPath));
 
 io.on('connection', (socket) => {
     console.log('new user connected');
-//emitting and listening to events to/from client
-    socket.emit('receivedEmail', {
-        from: 'robson@gmail.com',
-        text: 'I want to eat sushi tonight',
-        createdAt: new Date().getTime()
-    });
+    //emitting and listening to events to/from client
 
-    socket.on('createMessage',(newMessage)=>{
-        console.log('createMessage', newMessage);
+    socket.on('createMessage', (message) => {
+        console.log('createMessage', message);
+        io.emit('newMessage', {
+            from: message.from,
+            text: message.text,
+            createdAt: new Date().getTime()
+        })
     })
 
     socket.on('disconnect', () => {
