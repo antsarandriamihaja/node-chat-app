@@ -16,3 +16,13 @@ socket.on('disconnect', function () {
 socket.on('newMessage', (message)=>{
     console.log('newMessage', message);
 })
+socket.emit('createMessage', {
+    from: 'Antsa',
+    text: 'Hi'
+}, function (data){
+    console.log('Got it', data);
+});
+
+jQuery('#message-form').on('submit', function(e){
+    e.preventDefault();
+})
