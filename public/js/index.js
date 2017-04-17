@@ -14,22 +14,38 @@ socket.on('disconnect', function () {
 //do something with the data emitted by server
 //listening to events from server
 socket.on('newMessage', (message)=>{
-  var formattedTime = moment(message.createdAt).format('h:mm a');
-    //create an element with jQuery
-    var li = jQuery('<li></li>');
-    li.text(`${message.from} ${formattedTime}: ${message.text}`);
-    jQuery('#messages').append(li);
+    var formattedTime = moment(message.createdAt).format('h:mm a');
+    var template = jQuery('#message-template').html();
+    var html = Mustache.render(template, {
+        text: message.text,
+        from: message.from,
+        createdAt: formattedTime
+    });
+
+    jQuery('#messages').append(html);
+//   
+//     //create an element with jQuery
+//     var li = jQuery('<li></li>');
+//     li.text(`${message.from} ${formattedTime}: ${message.text}`);
+//     jQuery('#messages').append(li);
 })
 
 socket.on('newLocationMessage', function(message){
-    var li = jQuery('<li></li>');
-    var a = jQuery('<a target="_blank">My current location </a>');
     var formattedTime = moment(message.createdAt).format('h:mm a');
-    li.text(`${message.from}: `);
-    a.attr('href', message.url);
-    li.append(`${formattedTime}: `);
-    li.append(a);
-     jQuery('#messages').append(li);
+    var template = jQuery('#location-message-template').html();
+    var html = Mustache.render(template, {
+        from: message.from,
+        url: message.url,
+        createdAt: formattedTime
+    })
+    // var li = jQuery('<li></li>');
+    // var a = jQuery('<a target="_blank">My current location </a>');
+    
+    // li.text(`${message.from}: `);
+    // a.attr('href', message.url);
+    // li.append(`${formattedTime}: `);
+    // li.append(a);
+     jQuery('#messages').append(html);
 })
 
 var messageTextbox = jQuery('[name=message]');
@@ -43,6 +59,7 @@ jQuery('#message-form').on('submit', function(e){
 messageTextbox.val('');
     })
 })
+
 var locationButton = jQuery('#send-location');
 locationButton.on('click', function(){
     if (!navigator.geolocation){
