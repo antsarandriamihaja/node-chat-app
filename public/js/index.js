@@ -14,19 +14,20 @@ socket.on('disconnect', function () {
 //do something with the data emitted by server
 //listening to events from server
 socket.on('newMessage', (message)=>{
-    console.log('newMessage', message);
+  var formattedTime = moment(message.createdAt).format('h:mm a');
     //create an element with jQuery
     var li = jQuery('<li></li>');
-    li.text(`${message.from}: ${message.text}`);
+    li.text(`${message.from} ${formattedTime}: ${message.text}`);
     jQuery('#messages').append(li);
 })
 
 socket.on('newLocationMessage', function(message){
     var li = jQuery('<li></li>');
     var a = jQuery('<a target="_blank">My current location </a>');
-
+    var formattedTime = moment(message.createdAt).format('h:mm a');
     li.text(`${message.from}: `);
     a.attr('href', message.url);
+    li.append(`${formattedTime}: `);
     li.append(a);
      jQuery('#messages').append(li);
 })
@@ -34,7 +35,6 @@ socket.on('newLocationMessage', function(message){
 var messageTextbox = jQuery('[name=message]');
 jQuery('#message-form').on('submit', function(e){
     e.preventDefault();
-
     socket.emit('createMessage', {
         from: 'User',
         text: messageTextbox.val()
